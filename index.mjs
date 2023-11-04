@@ -10,6 +10,10 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
+app.get('/data/', async(req, res)=> {
+res.status(200).send('hello')
+})
+
 app.post('/data/', async (req, res) => {
   const { url } = req.body;
 
