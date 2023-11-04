@@ -20,13 +20,13 @@ app.post('/data/', async (req, res) => {
       "messages": [
         {
           "role": "system",
-          "content": `summarize this information from this webpage, make it user friendly and only talk about the content on in the text`,
+          "content": `summarize this information from this webpage, make it user friendly and write the summary as if you are explaining what you are reading to a person`,
           "role": "user",
           "content": `${data}`
         }
       ]
     }
-
+  
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -36,28 +36,29 @@ app.post('/data/', async (req, res) => {
       },
       body: JSON.stringify(reqBody)
     };
-
+  
     const response = await fetch('https://api.openai.com/v1/chat/completions', requestOptions);
-
+  
     if (response.statusText !== 'OK') {
       throw new Error(`Error ${response.status} - Please try again!`);
     }
-
+  
     return response.json();
   };
-
+  
   try {
     const response = await fetch(url);
     const websiteData = await response.text();
     const $ = cheerio.load(websiteData);
-    const paragraphs = $('p').map((el) => $(el).text()).get();
-    const allParagraphs = paragraphs.join('\n');
+    const paragraphs = $('p').map((i, el) => $(el).text()).get();
 
+    const allParagraphs = paragraphs.join('\n');
     const aiSummary = await getChatGPTProject(allParagraphs);
     
-    res.status(200).json({data: aiSummary});
+    res.status(200).json({data: aiSummary.choices[0].message.content});
 
   } catch (error) {
+    console.log(error)
     res.status(500).send('Error loading');
   }
 
@@ -66,3 +67,5 @@ app.post('/data/', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
