@@ -16,7 +16,7 @@ res.status(200).send('hello')
 
 app.post('/data/', async (req, res) => {
   const { url } = req.body;
-
+console.log(url)
   const getChatGPTProject = async (data) => {
     const reqBody =
     {
@@ -24,7 +24,7 @@ app.post('/data/', async (req, res) => {
       "messages": [
         {
           "role": "system",
-          "content": `summarize this information from this webpage, make it user friendly and write the summary as if you are explaining what you are reading to a person`,
+          "content": `summarize this information from this webpage, make it user friendly and write the summary as if you are explaining just the overall summary of what the page contains. write the summary as if to answer this question: "what is this content about?"`,
           "role": "user",
           "content": `${data}`
         }
